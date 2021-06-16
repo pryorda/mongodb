@@ -19,7 +19,8 @@
 # limitations under the License.
 #
 
-define :mongodb_instance,
+# TODO: This needs to be converted to a custom resource
+define :mongodb_instance, # rubocop:disable ChefModernize/Definitions
        mongodb_type: 'mongod',
        action: [:enable, :start],
        logpath: '/var/log/mongodb/mongod.log',
@@ -50,7 +51,7 @@ define :mongodb_instance,
     # Search for config servers
     unless node['mongodb']['config']['mongos']['sharding']['configDB']
       node.default['mongodb']['config']['mongos']['sharding']['configDB'] = params[:configservers].map do |n|
-        "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['mongod']['net']['port']}"
+        "#{n['mongodb']['configserver_url'] || n['fqdn']}:#{n['mongodb']['config']['mongod']['net']['port']}"
       end.sort.join(',')
 
       # TODO: handle 3.2 config server replicasets

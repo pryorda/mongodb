@@ -113,7 +113,7 @@ module MongoDB
             begin
               connection = retrieve_db_v2
             rescue Mongo::Error::NoServerAvailable => e
-              Chef::Application.fatal!("Unable to connect to mongo: #{e}")
+              raise("Unable to connect to mongo: #{e}")
             end
           end
         end
@@ -135,41 +135,40 @@ module MongoDB
           end
         rescue Mongo::Error::OperationFailure => e
           # User probably already exists
-          Chef::Application.fatal!("Unable to add user on initial try: #{e}")
+          raise("Unable to add user on initial try: #{e}")
         rescue Mongo::Error::NoServerAvailable => e
           if @new_resource.connection['is_replicaset']
             # Node is part of a replicaset and may not be initialized yet, going to retry if set to
             i = 0
             while i < @new_resource.connection['mongod_create_user']['retries']
-              begin
-                rs_info = admin.command(replSetGetStatus: 1)
-                rs_info_self = rs_info.documents[0]['members'].select { |a| a['self'] }.first
-                has_info_message = rs_info_self.key?('infoMessage')
 
-                if rs_info_self['state'] == 1
-                  # This node is a primary node, try to add the user
-                  db.database.users.create(
-                    username,
-                    password: password,
-                    roles: roles
-                  )
-                  Chef::Log.info("Created or updated user #{username} on #{database} of primary replicaset node")
-                  break
-                elsif rs_info_self['state'] == 2 && has_info_message
-                  # This node is secondary but may be in the process of an election, retry
-                  Chef::Log.info("Unable to add user to secondary, election may be in progress, retrying in #{@new_resource.connection['mongod_create_user']['delay']} seconds...")
-                elsif rs_info_self['state'] == 2 && !has_info_message
-                  # This node is secondary and not in the process of an election, bail out
-                  Chef::Log.info('Current node appears to be a secondary node in replicaset, could not detect election in progress, not adding user')
-                  break
-                end
+              rs_info = admin.command(replSetGetStatus: 1)
+              rs_info_self = rs_info.documents[0]['members'].select { |a| a['self'] }.first
+              has_info_message = rs_info_self.key?('infoMessage')
+
+              if rs_info_self['state'] == 1
+                # This node is a primary node, try to add the user
+                db.database.users.create(
+                  username,
+                  password: password,
+                  roles: roles
+                )
+                Chef::Log.info("Created or updated user #{username} on #{database} of primary replicaset node")
+                break
+              elsif rs_info_self['state'] == 2 && has_info_message
+                # This node is secondary but may be in the process of an election, retry
+                Chef::Log.info("Unable to add user to secondary, election may be in progress, retrying in #{@new_resource.connection['mongod_create_user']['delay']} seconds...")
+              elsif rs_info_self['state'] == 2 && !has_info_message
+                # This node is secondary and not in the process of an election, bail out
+                Chef::Log.info('Current node appears to be a secondary node in replicaset, could not detect election in progress, not adding user')
+                break
               end
 
               i += 1
               sleep(@new_resource.connection['mongod_create_user']['delay'])
             end
           else
-            Chef::Application.fatal!("Unable to add user: #{e}")
+            raise("Unable to add user: #{e}")
           end
         end
       end
@@ -209,8 +208,7 @@ module MongoDB
             )
           rescue Mongo::Auth::Unauthorized => e
             # invalid creds
-            Chef::Application.fatal!("Unable to authenticate as admin user: #{e}")
-            connection = retrieve_db_v2
+            raise("Unable to authenticate as admin user: #{e}")
           rescue Mongo::Error::NoServerAvailable => e
             # Replicaset not initialized
             Chef::Log.warn("Server appears to be part of an uninitialized or initializing replicaset: #{e}")
@@ -219,7 +217,7 @@ module MongoDB
             begin
               connection = retrieve_db_v2
             rescue Mongo::Error::NoServerAvailable => e
-              Chef::Application.fatal!("Unable to connect to mongo: #{e}")
+              raise("Unable to connect to mongo: #{e}")
             end
           end
         end

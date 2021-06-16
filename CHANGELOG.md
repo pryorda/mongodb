@@ -1,5 +1,43 @@
 # sc-mongodb Cookbook CHANGELOG
 
+## Unreleased
+
+## 4.1.1 - *2021-06-01*
+
+- resolved cookstyle error: definitions/mongodb.rb:53:12 convention: `Style/RedundantParentheses`
+- resolved cookstyle error: libraries/mongodb_config_helpers.rb:21:5 warning: `ChefDeprecations/UseYamlDump`
+- resolved cookstyle error: libraries/user.rb:144:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: libraries/user.rb:144:15 convention: `Style/RedundantBegin`
+- resolved cookstyle error: libraries/user.rb:145:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/user.rb:146:17 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:147:17 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:149:17 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:166:1 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: libraries/user.rb:167:1 convention: `Layout/EmptyLines`
+- resolved cookstyle error: libraries/user.rb:168:15 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:168:17 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:169:15 convention: `Layout/IndentationConsistency`
+- resolved cookstyle error: libraries/user.rb:169:17 convention: `Layout/IndentationConsistency`
+- Resolve cookstyle issues
+- Comment out ChefSpec until defintions are converted to custom resources
+- Disable platforms that do not currently work
+- Remove testing on EL6
+
+## 4.0.1
+
+- resolved cookstyle error: recipes/mongodb_org_repo.rb:31:53 convention: `Layout/TrailingWhitespace`
+- resolved cookstyle error: recipes/mongodb_org_repo.rb:31:54 refactor: `ChefModernize/FoodcriticComments`
+
+## 4.0.0
+
+- Minimum Chef version 14
+- resolved cookstyle error: libraries/user.rb:116:15 refactor: `ChefCorrectness/ChefApplicationFatal`
+- resolved cookstyle error: libraries/user.rb:138:11 refactor: `ChefCorrectness/ChefApplicationFatal`
+- resolved cookstyle error: libraries/user.rb:172:13 refactor: `ChefCorrectness/ChefApplicationFatal`
+- resolved cookstyle error: libraries/user.rb:212:13 refactor: `ChefCorrectness/ChefApplicationFatal`
+- resolved cookstyle error: libraries/user.rb:222:15 refactor: `ChefCorrectness/ChefApplicationFatal`
+- resolved cookstyle error: metadata.rb:11:1 refactor: `ChefModernize/UnnecessaryDependsChef14`
+
 ## v3.0.0
 
 - Update CI tooling to actions
